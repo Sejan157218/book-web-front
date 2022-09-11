@@ -1,0 +1,8 @@
+#!/media/sejan/F26C4D476C4D07B5/Work/Django_and_react/Book-rest-api/restapi/env/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pip._internal.cli.main import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
