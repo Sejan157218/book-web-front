@@ -5,16 +5,18 @@ from api.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,authentication_classes,permission_classes
 from .models import *
 from django.contrib.postgres.search import SearchVector,SearchQuery
 from django.db.models import Q
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class index(APIView):
     def get(self, request, format=None):
         data={
-                "": "index",
+                "Server": "Running",
             }
         return Response(data)
 
@@ -34,6 +36,8 @@ def AuthorObject(request):
         return Response(serializer.data)
 
 @api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes ([IsAuthenticated])
 def AllBook(request):
     if request.method=='GET':
         data=Book.objects.all();
@@ -66,6 +70,7 @@ def BookByAuthor(request,pk):
 
 @api_view(['GET'])
 def SearchData(request,pk):
+    if request.method=='GET':
         search = Book.objects.annotate(search=SearchVector('category__title', 'author__name','title')).filter(Q(search=pk) | Q(search__icontains=pk)).distinct()
         serializer= BookSerializer(search,many=True)
         return Response(serializer.data)
@@ -74,6 +79,10 @@ def SearchData(request,pk):
 
 @api_view(['GET'])
 def DetailsData(request,pk):
+    if request.method=='GET':
         data=Book.objects.get(id=pk)
         serializer= BookSerializer(data)
         return Response(serializer.data)
+
+
+

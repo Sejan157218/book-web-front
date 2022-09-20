@@ -36,7 +36,7 @@ class Book(models.Model):
     author=models.ForeignKey(Author,on_delete=models.SET_NULL,blank=True,null=True)
     title=models.CharField(max_length=200)
     date=models.DateField(auto_now_add=True)
-    market_price=models.IntegerField()
+    market_price=models.IntegerField()  
     selling_Price=models.IntegerField(null=True, blank=True)
     discount_percent  = models.FloatField(null=True, blank=True)
     description=models.TextField()
