@@ -86,3 +86,20 @@ def DetailsData(request,pk):
 
 
 
+class OrderView(APIView):
+    def get(self,request):
+        # dataAll=Order.objects.all()
+        datas=Order.objects.filter(user="sejan13@gmail.com")
+        serializer=OrderSerializer(data=datas,many=True) 
+        print(serializer.is_valid())
+        return Response(serializer.data)
+        # Response({"msg":"Order successfully"},status=status.HTTP_200_OK)
+
+    def post(self,request):
+        serializer=OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"msg":"Order successfully"},status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+

@@ -30,3 +30,9 @@ class BookSerializer(serializers.ModelSerializer):
     def get_selling_Price(self,obj):
         return obj.selling_Price
        
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+            model = Order
+            fields= '__all__' 

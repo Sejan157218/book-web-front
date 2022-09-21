@@ -10,5 +10,6 @@ urlpatterns = [
     path('category/<str:pk>/', BookByCategory, name="category-by-book"),
     path('author/<str:pk>/', BookByAuthor, name="author-by-book"),
     path('search/<str:pk>/', SearchData, name="search"),
-    path('details/<str:pk>/',DetailsData,name='details')
+    path('details/<str:pk>/',DetailsData,name='details'),
+    path('order/',OrderView.as_view(),name='order')
 ]

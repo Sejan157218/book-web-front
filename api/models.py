@@ -1,6 +1,8 @@
 from django.db import models
 import datetime
 from django.utils.translation import gettext as _
+from django.contrib.postgres.fields import ArrayField
+
 # Create your models here.
 
 
@@ -57,3 +59,25 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+
+ORDER_STATUS={
+    ("Order Received","Order Received"),
+    ("Order Processing","Order Processing"),
+    ("On the way","On the way"),
+    ("Order Completed","Order Completed"),
+    ("Order Canceled","Order Canceled"),
+}
+
+
+
+class Order(models.Model):
+    user=models.EmailField(default=None,null=True,blank=True)
+    book =  ArrayField(models.JSONField(blank=True, null = True))
+    totalPrice=models.CharField(max_length=30,blank=True)
+    order_status=models.CharField(max_length=100,choices=ORDER_STATUS,default="Order Received")
+    date=models.DateField(auto_now_add=True,null=True)
+    def __str__(self):
+        return self.user
