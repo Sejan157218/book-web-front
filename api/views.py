@@ -62,7 +62,9 @@ def BookByAuthor(request,pk):
     if request.method=='GET':
         dataAll=Book.objects.all()
         data=dataAll.filter(author__name=pk)
+        # print(data)
         serializer=BookSerializer(data,many=True)
+        # print(serializer.is_valid())
         return Response(serializer.data)
    
 
@@ -82,14 +84,16 @@ def DetailsData(request,pk):
     if request.method=='GET':
         data=Book.objects.get(id=pk)
         serializer= BookSerializer(data)
+        
         return Response(serializer.data)
 
 
 
 class OrderView(APIView):
-    def get(self,request):
-        # dataAll=Order.objects.all()
-        datas=Order.objects.filter(user="sejan13@gmail.com")
+    def get(self,request,pk):
+        
+        datas=Order.objects.filter(user=pk)
+      
         serializer=OrderSerializer(data=datas,many=True) 
         print(serializer.is_valid())
         return Response(serializer.data)

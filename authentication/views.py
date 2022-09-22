@@ -31,6 +31,7 @@ def SignUp(request):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             user=User.objects.get(email=serializer.data["email"])
+            login(request,user)
             token_obj,_=Token.objects.get_or_create(user=user)
             data={
                 "username": user.username,
