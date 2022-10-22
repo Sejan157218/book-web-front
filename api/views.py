@@ -11,6 +11,8 @@ from django.contrib.postgres.search import SearchVector,SearchQuery
 from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # Create your views here.
 
 class index(APIView):
@@ -38,8 +40,12 @@ def AuthorObject(request):
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes ([IsAuthenticated])
+@authentication_classes([JWTAuthentication]) # correct auth class
+@permission_classes([IsAuthenticated])
 def AllBook(request):
     if request.method=='GET':
+        user=request.user
+        print(user)
         data=Book.objects.all();
         serializer=BookSerializer(data,many=True)
         # serializer.is_valid()

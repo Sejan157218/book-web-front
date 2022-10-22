@@ -12,8 +12,14 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 import json
 from rest_framework.authentication import TokenAuthentication
+
 from rest_framework.permissions import IsAuthenticated
 import random
+
+from rest_framework.decorators import api_view,authentication_classes,permission_classes
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.tokens import RefreshToken
+
 # Create your views here.
 class index(APIView):
     def get(self, request, format=None):
@@ -28,16 +34,21 @@ class index(APIView):
 def SignUp(request):
     if request.method=="POST":
         serializer = UserSerializer(data=request.data)
+      
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             user=User.objects.get(email=serializer.data["email"])
-            login(request,user)
-            token_obj,_=Token.objects.get_or_create(user=user)
+            print(user)
+            # login(request,user)
+            # token_obj,_=Token.objects.get_or_create(user=user)
+            refresh = RefreshToken.for_user(user)
+            login(request,user,backend='django.contrib.auth.backends.ModelBackend')
             data={
                 "username": user.username,
                 "email": user.email,
                 "phone" : user.phone,
-                "token":str(token_obj),
+                "token":str(refresh),
+                'access': str(refresh.access_token),
                
             }
             return Response({"msg":"Successfully", "payload":data,"status":status.HTTP_201_CREATED})    
@@ -58,32 +69,33 @@ def Login(request):
          
            
             if userAuthenticate:
-                
+
                 login(request,userAuthenticate)
                
-                token_obj,_=Token.objects.get_or_create(user=userAuthenticate)
+                # token_obj,_=Token.objects.get_or_create(user=userAuthenticate)
+                refresh = RefreshToken.for_user(userAuthenticate)
              
                 data={
                 "username": userAuthenticate.username,
                 "email": userAuthenticate.email,
                 "phone" : userAuthenticate.phone,
-                "token":str(token_obj),
+                "token":str(refresh),
+                'access': str(refresh.access_token),
                
             }
                 return Response({"msg":"Successfully",'payload':data, "status":status.HTTP_201_CREATED}) 
             return Response({"error":"You have entered an invalid username or password"},status=status.HTTP_400_BAD_REQUEST)
             
-        # else:
-        #     return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
 
 
 
-class Logout(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]   
+class Logout(APIView): 
+    @authentication_classes([JWTAuthentication]) # correct auth class
+    @permission_classes([IsAuthenticated])
     def get(self, request, format=None):
         # simply delete the token to force a login
-        request.user.auth_token.delete()
         logout(request)
         return Response({"msg":"LogOut successfully"},status=status.HTTP_200_OK)
 

@@ -6,8 +6,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self,username,email,password,phone=None,phoneOTP=None,**extra_fields):
-        print("password",password)
+    def create_user(self,username,email,password=None,phone=None,phoneOTP=None,**extra_fields):
+     
         if not username:
             raise ValueError("the given username is not valid")
         
@@ -20,7 +20,6 @@ class CustomUserManager(BaseUserManager):
         user=self.model(
             username=username,
             email=email,
-            password=password,
             phone=phone,
             phoneOTP=phoneOTP,
             **extra_fields
