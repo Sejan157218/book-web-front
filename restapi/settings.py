@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
+     'drf_api_logger',
     # 'rest_framework_simplejwt',
   
 ]
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'drf_api_logger.middleware.api_logger_middleware.APILoggerMiddleware', 
 ]
 
 ROOT_URLCONF = 'restapi.urls'
@@ -249,4 +251,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
+
+DRF_API_LOGGER_DATABASE = True
 
